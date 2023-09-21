@@ -23,7 +23,10 @@ pub fn build(b: *std.Build) !void {
         return;
     }
 
-    const exe = b.addExecutable(.{ .name = "snake", .root_source_file = .{ .path = "src/main.zig" }, .optimize = optimize, .target = target });
+    var exe = b.addExecutable(.{ .name = "snake", .root_source_file = .{ .path = "src/main.zig" }, .optimize = optimize, .target = target });
+    if (target.os_tag == std.Target.Os.Tag.windows and optimize != .Debug) {
+        exe.subsystem = .Windows;
+    }
 
     rl.link(b, exe, target, optimize);
     exe.addModule("raylib", raylib);
